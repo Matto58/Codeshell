@@ -38,7 +38,8 @@ namespace Mattodev.Codeshell
 				switch (c[0].ToLower())
 				{
 					case "run":
-						Console.WriteLine(exec(code));
+						string o = exec(code);
+						Console.Write(o + (string.IsNullOrWhiteSpace(o) ? "" : "\n"));
 						break;
 					case "new":
 						code = new();
@@ -55,7 +56,8 @@ namespace Mattodev.Codeshell
 						canExit = true;
 						break;
 					default:
-						Console.WriteLine(exec(cmd));
+						string o2 = exec(cmd);
+						Console.Write(o2 + (string.IsNullOrWhiteSpace(o2) ? "" : "\n"));
 						break;
 				}
 			}
@@ -65,15 +67,19 @@ namespace Mattodev.Codeshell
 		{
 			Console.BackgroundColor = ConsoleColor.Blue;
 			Console.ForegroundColor = ConsoleColor.Yellow;
+			bool bw = false;
 			if (args.Length > 0)
 			{
 				if (args[0] == "-bw" || args[0] == "--grayscale")
-					Console.ResetColor();
+					bw = true;
 			}
+
+			if (bw) Console.ResetColor();
+			
 			Console.Clear();
 			Dictionary<int, string> code = new();
 
-			Console.WriteLine($"Codeshell v0.1.0 for MattoScript v{MTSInfo.mtsVer} (engine v{MTSInfo.engVer})");
+			Console.WriteLine($"Codeshell v{CdShInfo.version} for MattoScript v{MTSInfo.mtsVer} (engine v{MTSInfo.engVer})");
 			
 			while (true)
 			{
@@ -90,6 +96,9 @@ namespace Mattodev.Codeshell
 						reportErr("Internal:" + e.Message);
 					}
 				}
+				Console.BackgroundColor = ConsoleColor.Blue;
+				Console.ForegroundColor = ConsoleColor.Yellow;
+				if (bw) Console.ResetColor();
 
 				if (canExit) return;
 			}
