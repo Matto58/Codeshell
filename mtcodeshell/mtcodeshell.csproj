@@ -9,10 +9,10 @@
 
   <ItemGroup>
     <Reference Include="mts-build">
-      <HintPath>E:\Apps\Programming Languages\mattoscript\mts-shell\bin\Debug\net7.0\mts-build.dll</HintPath>
+      <HintPath>..\..\MattoScript\mts-shell\bin\Release\net7.0\mts-build.dll</HintPath>
     </Reference>
     <Reference Include="mts-engine-core">
-      <HintPath>E:\Apps\Programming Languages\mattoscript\mts-shell\bin\Debug\net7.0\mts-engine-core.dll</HintPath>
+      <HintPath>..\..\MattoScript\mts-shell\bin\Release\net7.0\mts-engine-core.dll</HintPath>
     </Reference>
   </ItemGroup>
 

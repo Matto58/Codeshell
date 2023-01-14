@@ -6,7 +6,7 @@ namespace Mattodev.Codeshell
 	public class CdShInfo
 	{
 		public static string
-			version = "0.1.0";
+			version = "0.1.1";
 	}
 
 	internal class Program
@@ -50,9 +50,6 @@ namespace Mattodev.Codeshell
 							.ForEach(Console.WriteLine);
 
 						Console.WriteLine();
-						break;
-					case "clear":
-						Console.Clear();
 						break;
 					case "exit":
 						canExit = true;
