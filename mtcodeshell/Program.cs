@@ -55,6 +55,9 @@ namespace Mattodev.Codeshell
 					case "exit":
 						canExit = true;
 						break;
+					case "clear":
+						Console.Clear();
+						break;
 					default:
 						string o2 = exec(cmd);
 						Console.Write(o2 + (string.IsNullOrWhiteSpace(o2) ? "" : "\n"));
