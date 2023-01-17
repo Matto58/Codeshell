@@ -45,10 +45,30 @@ namespace Mattodev.Codeshell
 						code = new();
 						break;
 					case "list":
-						code.Where(ln => !string.IsNullOrWhiteSpace(ln.Value))
-							.Select(pair => $"{pair.Key} {pair.Value}")
-							.ToList()
-							.ForEach(Console.WriteLine);
+						int min, max;
+						switch (c.Length - 1) {
+							case 0:
+								code.Where(ln => !string.IsNullOrWhiteSpace(ln.Value))
+									.Select(pair => $"{pair.Key} {pair.Value}")
+									.ToList()
+									.ForEach(Console.WriteLine);
+								break;
+							case 1:
+								min = int.Parse(c[1]);
+								code.Where(ln => !string.IsNullOrWhiteSpace(ln.Value) && ln.Key == min)
+									.Select(pair => $"{pair.Key} {pair.Value}")
+									.ToList()
+									.ForEach(Console.WriteLine);
+								break;
+							default:
+								min = int.Parse(c[1]);
+								max = int.Parse(c[2]);
+								code.Where(ln => !string.IsNullOrWhiteSpace(ln.Value) && ln.Key >= min && ln.Key <= max)
+									.Select(pair => $"{pair.Key} {pair.Value}")
+									.ToList()
+									.ForEach(Console.WriteLine);
+								break;
+						}
 
 						Console.WriteLine();
 						break;
