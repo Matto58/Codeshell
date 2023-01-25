@@ -6,7 +6,7 @@ namespace Mattodev.Codeshell
 	public class CdShInfo
 	{
 		public static string
-			version = "0.1.1";
+			version = "0.1.2";
 	}
 
 	internal class Program
@@ -16,13 +16,27 @@ namespace Mattodev.Codeshell
 		{
 			Console.WriteLine("!" + msg);
 		}
-		static string exec(Dictionary<int, string> lns)
+		static T[] FillArr<T>(int size, T defaultValue)
+		{
+			T[] arr = new T[size];
+			for (int i = 0; i < size; i++)
+				arr[i] = defaultValue;
+			return arr;
+		}
+		static TArr[] FillWithDictionary<TArr>(TArr[] arrIn, Dictionary<int, TArr> dict, int offset = 0)
+		{
+			TArr[] arr = arrIn;
+			for (int i = 0; i < dict.Max(p => p.Key); i++)
+				arr[i] = dict.GetValueOrDefault(i + offset, arrIn[i]);
+			return arr;
+		}
+		static MTSConsole exec(Dictionary<int, string> lns)
 			=> Runner.runFromCode(
-				lns
-				.Select((pair) => pair.Value)
-				.ToArray(), "Codeshell").cont;
-		static string exec(string ln)
-			=> Runner.runFromCode(ln, "Codeshell").cont;
+				FillWithDictionary(
+					FillArr(lns.Max(pair => pair.Key), "nop"), lns, 1),
+				"Codeshell");
+		static MTSConsole exec(string ln)
+			=> Runner.runFromCode(ln, "Codeshell");
 
 		static void processCmd(string cmd, ref Dictionary<int, string> code)
 		{
@@ -38,7 +52,7 @@ namespace Mattodev.Codeshell
 				switch (c[0].ToLower())
 				{
 					case "run":
-						string o = exec(code);
+						string o = exec(code).cont;
 						Console.Write(o + (string.IsNullOrWhiteSpace(o) ? "" : "\n"));
 						break;
 					case "new":
@@ -78,8 +92,34 @@ namespace Mattodev.Codeshell
 					case "clear":
 						Console.Clear();
 						break;
+					case "save":
+						if (c.Length < 1)
+							reportErr("NoArgsGiven");
+						else
+							File.WriteAllLines(c[1] + ".cdsh",
+								code.OrderBy(p => p.Key)
+									.Where(p => p.Value != "nop")
+									.Select(p => $"{p.Key} {p.Value}")
+							);
+						break;
+					case "load":
+						if (c.Length < 1)
+							reportErr("NoArgsGiven");
+						else
+						{
+							code = new();
+							var cd = code;
+							File.ReadAllLines(c[1] + ".cdsh")
+								.ToList()
+								.ForEach(ln => cd.Add(
+									int.Parse(ln.Split(' ')[0]),
+									string.Join(" ", ln.Split(' ')[1..]))
+								);
+							code = cd;
+						}
+						break;
 					default:
-						string o2 = exec(cmd);
+						string o2 = exec(cmd).cont;
 						Console.Write(o2 + (string.IsNullOrWhiteSpace(o2) ? "" : "\n"));
 						break;
 				}
@@ -93,8 +133,12 @@ namespace Mattodev.Codeshell
 			bool bw = false;
 			if (args.Length > 0)
 			{
-				if (args[0] == "-bw" || args[0] == "--grayscale")
-					bw = true;
+				switch (args[0])
+				{
+					case "-bw" or "--grayscale":
+						bw = true;
+						break;
+				}
 			}
 
 			if (bw) Console.ResetColor();
